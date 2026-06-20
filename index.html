@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOU — Catálogo de Camisetas</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--roxo:#7c4daa;--roxo2:#5c3488;--roxol:#e8dff5;--branco:#fff;--cinza:#f5f5f5;--borda:#e0e0e0;--preto:#1a1a1a;--verde:#2e7d32;--laranja:#f57c00}
+body{font-family:'Montserrat',sans-serif;background:var(--cinza);color:var(--preto);min-height:100vh}
+
+/* BARRA SUPERIOR */
+.topbar{background:var(--roxo);color:#fff;text-align:center;padding:10px;font-size:12px;font-weight:700;letter-spacing:1px}
+.topbar span{opacity:.7;font-weight:400} 
+
+/* HEADER */
+header{background:var(--branco);padding:16px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:4px solid var(--roxo);box-shadow:0 2px 12px rgba(0,0,0,.08);flex-wrap:wrap;gap:12px}
+.brand{display:flex;align-items:center;gap:14px}
+#logo-circle{width:52px;height:52px;border-radius:50%;background:var(--roxol);display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;border:2px solid var(--roxo);flex-shrink:0;position:relative}
+#logo-circle img{width:100%;height:100%;object-fit:contain;display:none}
+#logo-circle span{font-size:22px;color:var(--roxo)}
+#logo-circle input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.brand-texts .nome{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;font-style:italic;color:var(--roxo);letter-spacing:2px}
+.brand-texts .sub{font-size:9px;color:#aaa;letter-spacing:2px;text-transform:uppercase}
+.header-btns{display:flex;gap:8px;flex-wrap:wrap}
+
+/* BOTÕES */
+.btn{padding:9px 18px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all .2s;text-transform:uppercase;letter-spacing:.5px;display:inline-flex;align-items:center;gap:6px}
+.btn-roxo{background:var(--roxo);color:#fff}
+.btn-roxo:hover{background:var(--roxo2)}
+.btn-branco{background:var(--branco);color:var(--roxo);border:2px solid var(--roxo)}
+.btn-branco:hover{background:var(--roxol)}
+.btn-verde{background:var(--verde);color:#fff}
+.btn-grande{padding:14px 28px;font-size:14px;border-radius:12px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#2d1b4e,#1a1a1a);padding:48px 28px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(124,77,170,.2),transparent 60%)}
+.hero-in{position:relative;max-width:700px}
+.hero-tag{display:inline-block;border:1px solid rgba(124,77,170,.6);color:var(--roxol);font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:5px 14px;border-radius:3px;margin-bottom:16px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3rem);font-weight:700;font-style:italic;color:#fff;line-height:1.2;margin-bottom:12px}
+.hero h1 span{color:#c4a0e8}
+.hero-verso{font-size:12px;color:rgba(255,255,255,.45);font-style:italic}
+
+/* BARRA DE FERRAMENTAS */
+.toolbar{background:var(--branco);border-bottom:1px solid var(--borda);padding:14px 28px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.busca-wrap{position:relative;flex:1;min-width:180px;max-width:320px}
+.busca-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:#bbb;pointer-events:none}
+#busca{width:100%;padding:9px 12px 9px 34px;border:1.5px solid var(--borda);border-radius:8px;font-family:'Montserrat',sans-serif;font-size:13px;outline:none}
+#busca:focus{border-color:var(--roxo)}
+.filtros{display:flex;gap:7px;flex-wrap:wrap}
+.fbtn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--borda);background:var(--branco);font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;color:#888;transition:all .2s}
+.fbtn:hover,.fbtn.ativo{background:var(--roxo);border-color:var(--roxo);color:#fff}
+.fbtn-todas{padding:6px 14px;border-radius:20px;background:var(--roxo);color:#fff;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:none}
+
+/* CONTADOR */
+.contador{padding:14px 28px 0;font-size:10px;color:#bbb;font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.contador span{color:var(--roxo)}
+
+/* LISTA DE ESTAMPAS */
+.lista{padding:20px 28px 80px;max-width:1400px;margin:0 auto}
+
+/* CARD DE ESTAMPA */
+.estampa{background:var(--branco);border-radius:20px;border:1.5px solid var(--borda);overflow:hidden;margin-bottom:28px;box-shadow:0 4px 20px rgba(0,0,0,.05)}
+.estampa.escondida{display:none}
+.est-cabeca{padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.est-cabeca-left{display:flex;align-items:center;gap:14px}
+.est-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;font-style:italic;line-height:1;white-space:nowrap}
+.est-titulo{font-size:1rem;font-weight:700;color:#333;font-style:italic}
+.est-editar{padding:5px 12px;border-radius:6px;background:transparent;border:1.5px solid var(--borda);color:#aaa;font-size:10px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s;text-transform:uppercase}
+.est-editar:hover{border-color:var(--roxo);color:var(--roxo)}
+.est-corpo{padding:20px 24px 26px}
+
+/* MOCKUPS */
+.mockups{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;margin-bottom:24px}
+.mockup{border-radius:14px;border:1.5px solid var(--borda);overflow:hidden;transition:box-shadow .2s}
+.mockup:hover{box-shadow:0 8px 28px rgba(0,0,0,.1)}
+.mockup-tag{color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:10px 16px}
+.mockup-foto{background:#fafafa;display:flex;align-items:center;justify-content:center;padding:18px;min-height:260px;border-bottom:1px solid var(--borda)}
+.mockup-foto img{max-width:100%;max-height:280px;object-fit:contain;transition:transform .3s}
+.mockup:hover .mockup-foto img{transform:scale(1.03)}
+.mockup-info{padding:13px 16px 15px}
+.cor-atual{font-size:10px;color:#aaa;font-weight:600;margin-bottom:9px}
+.cor-atual strong{color:var(--preto)}
+.swatches{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.swatch{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;outline:2px solid transparent;outline-offset:2px;transition:transform .15s;flex-shrink:0}
+.swatch:hover{transform:scale(1.2)}
+.swatch.sel{outline:2px solid var(--roxo);transform:scale(1.2)}
+.btn-voltar{display:none;margin-top:9px;padding:5px 13px;background:var(--roxol);border:1.5px solid var(--roxo);border-radius:20px;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:var(--roxo);cursor:pointer;transition:all .2s}
+.btn-voltar.visivel{display:block}
+.btn-voltar:hover{background:var(--roxo);color:#fff}
+
+/* GALERIA DE CORES */
+.galeria-titulo{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#bbb;margin-bottom:12px;border-top:1px dashed var(--borda);padding-top:18px}
+.galeria{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.cor-card{border-radius:10px;border:1.5px solid var(--borda);overflow:hidden;transition:transform .2s,box-shadow .2s}
+.cor-card:hover{transform:translateY(-3px);box-shadow:0 6px 16px rgba(0,0,0,.09)}
+.cor-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.cor-nome{padding:7px 9px;font-size:10px;font-weight:700;display:flex;align-items:center;gap:5px}
+.cor-bolinha{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ESTADO VAZIO */
+.vazio{text-align:center;padding:80px 20px}
+.vazio-icon{font-size:4rem;margin-bottom:20px;display:block}
+.vazio-titulo{font-family:'Playfair Display',serif;font-size:1.5rem;font-style:italic;color:#ccc;margin-bottom:10px}
+.vazio-sub{font-size:13px;color:#bbb;margin-bottom:30px}
+
+/* FOOTER */
+footer{background:#2d1b4e;text-align:center;padding:28px;border-top:3px solid var(--roxo)}
+.f-logo{height:46px;width:46px;border-radius:50%;margin:0 auto 10px;display:block;object-fit:contain}
+.f-nome{font-family:'Playfair Display',serif;font-size:1.2rem;font-style:italic;color:#c4a0e8;letter-spacing:3px}
+.f-verso{font-size:10px;color:rgba(255,255,255,.3);margin-top:5px;font-style:italic}
+.f-copy{font-size:10px;color:rgba(255,255,255,.2);margin-top:8px}
+
+/* MODAL */
+.modal-fundo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;align-items:center;justify-content:center;padding:16px}
+.modal-fundo.aberto{display:flex}
+.modal{background:var(--branco);border-radius:20px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;position:relative}
+.modal-cabeca{padding:20px 24px;border-bottom:1px solid var(--borda);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--branco);z-index:1}
+.modal-titulo{font-size:15px;font-weight:700;color:var(--preto)}
+.modal-x{background:none;border:none;font-size:22px;cursor:pointer;color:#bbb;line-height:1;padding:0}
+.modal-x:hover{color:var(--preto)}
+.modal-corpo{padding:22px 24px}
+.campo-label{font-size:9px;font-weight:700;color:#aaa;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;margin-top:18px;display:block}
+.campo-label:first-child{margin-top:0}
+.campo-texto{width:100%;border:1.5px solid var(--borda);border-radius:8px;padding:11px 14px;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:600;outline:none;color:var(--preto)}
+.campo-texto:focus{border-color:var(--roxo)}
+.upload-par{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.upload-box{border:2px dashed var(--borda);border-radius:12px;padding:16px;text-align:center;cursor:pointer;position:relative;overflow:hidden;transition:all .2s;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.upload-box:hover{border-color:var(--roxo);background:var(--roxol)}
+.upload-box input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.upload-box img{max-height:85px;object-fit:contain;border-radius:6px;margin-bottom:6px}
+.upload-box-label{font-size:9px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:1px}
+.upload-box-icon{font-size:2rem;opacity:.2;margin-bottom:6px}
+.cores-upload{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cor-upload{border:1.5px solid var(--borda);border-radius:10px;overflow:hidden;cursor:pointer;position:relative;transition:border-color .2s}
+.cor-upload:hover{border-color:var(--roxo)}
+.cor-upload input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.cor-upload img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.cor-upload-ph{aspect-ratio:1;background:#fafafa;display:flex;align-items:center;justify-content:center;color:#ddd;font-size:1.5rem}
+.cor-upload-label{padding:5px 6px;text-align:center;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:3px}
+.cor-swatch-mini{width:9px;height:9px;border-radius:50%;border:1px solid rgba(0,0,0,.1);flex-shrink:0}
+.modal-rodape{padding:16px 24px;border-top:1px solid var(--borda);display:flex;gap:8px;justify-content:space-between;align-items:center;position:sticky;bottom:0;background:var(--branco)}
+.btn-excluir{color:#e53935;background:none;border:1.5px solid #e53935;padding:8px 16px;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;text-transform:uppercase}
+.btn-excluir:hover{background:#e53935;color:#fff}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;right:20px;background:#333;color:#fff;padding:11px 18px;border-radius:10px;font-size:12px;font-weight:600;z-index:999;transform:translateY(60px);opacity:0;transition:all .3s;max-width:300px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.ok{background:var(--verde)}
+.toast.err{background:#e53935}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  ✝ Clique na logo para trocar &nbsp;|&nbsp; <span>Clique em "+ Nova Estampa" para adicionar &nbsp;|&nbsp; Use "💾 Salvar" para não perder seu trabalho</span>
+</div>
+
+<header>
+  <div class="brand">
+    <div id="logo-circle">
+      <input type="file" accept="image/*" onchange="trocarLogo(this)" title="Clique para trocar a logo">
+      <span>✝</span>
+      <img id="logo-img" alt="Logo SOU">
+    </div>
+    <div class="brand-texts">
+      <div class="nome">SOU</div>
+      <div class="sub">Camisetas Evangélicas</div>
+    </div>
+  </div>
+  <div class="header-btns">
+    <button class="btn btn-roxo" onclick="abrirModalNovo()">+ Nova Estampa</button>
+    <button class="btn btn-branco" onclick="salvar()">💾 Salvar</button>
+    <label class="btn btn-branco" style="cursor:pointer">
+      📂 Carregar
+      <input type="file" accept=".json" style="display:none" onchange="carregar(this)">
+    </label>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <div class="hero-tag">Catálogo Oficial 2025</div>
+    <h1>Mais que estilo,<br><span>uma afirmação de quem sou</span></h1>
+    <div class="hero-verso">"Pela graça de Deus sou o que sou" — 1 Co 15:10</div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="busca-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="busca" placeholder="Buscar estampa...">
+  </div>
+  <div class="filtros" id="filtros">
+    <button class="fbtn-todas ativo" onclick="filtrar('todas',this)">Todas</button>
+  </div>
+  <button class="btn btn-roxo" onclick="abrirModalNovo()">+ Nova Estampa</button>
+</div>
+
+<div class="contador" id="contador"></div>
+<div class="lista" id="lista">
+  <div class="vazio" id="vazio">
+    <span class="vazio-icon">👕</span>
+    <div class="vazio-titulo">Nenhuma estampa ainda</div>
+    <div class="vazio-sub">Clique no botão abaixo para adicionar sua primeira estampa</div>
+    <button class="btn btn-roxo btn-grande" onclick="abrirModalNovo()">+ Adicionar Primeira Estampa</button>
+  </div>
+</div>
+
+<footer>
+  <img class="f-logo" id="f-logo" src="" alt="SOU" style="display:none">
+  <div class="f-nome">SOU</div>
+  <div class="f-verso">Mais que estilo, uma afirmação de quem sou</div>
+  <div class="f-copy">© 2025 SOU — Camisetas Evangélicas</div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-fundo" id="modal">
+  <div class="modal">
+    <div class="modal-cabeca">
+      <div class="modal-titulo" id="modal-titulo">Nova Estampa</div>
+      <button class="modal-x" onclick="fecharModal()">✕</button>
+    </div>
+    <div class="modal-corpo">
+      <span class="campo-label">Nome da Estampa</span>
+      <input class="campo-texto" id="campo-nome" placeholder='Ex: "A Minha Graça Te Basta"'>
+
+      <span class="campo-label">Mockup — Camiseta Padrão</span>
+      <div class="upload-par">
+        <div class="upload-box">
+          <input type="file" accept="image/*" onchange="upMockup(this,'padrao')">
+          <div id="prev-padrao"><div class="upload-box-icon">👕</div><div class="upload-box-label">Toque para adicionar</div></div>
+        </div>
+        <div class="upload-box">
+          <input type="file" accept="image/*" onchange="upMockup(this,'over')">
+          <div id="prev-over"><div class="upload-box-icon">👕</div><div class="upload-box-label">Oversize — Toque para adicionar</div></div>
+        </div>
+      </div>
+
+      <span class="campo-label">Fotos por Cor (suba cada cor separado)</span>
+      <div class="cores-upload" id="cores-upload"></div>
+    </div>
+    <div class="modal-rodape">
+      <button class="btn-excluir" id="btn-excluir" onclick="excluirEstampa()" style="display:none">🗑 Excluir Estampa</button>
+      <div style="display:flex;gap:8px;margin-left:auto">
+        <button class="btn btn-branco" onclick="fecharModal()">Cancelar</button>
+        <button class="btn btn-roxo" onclick="salvarEstampa()">✓ Salvar Estampa</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CORES = [
+  {n:'Azul',    h:'#283593'},
+  {n:'Bordô',   h:'#880E4F'},
+  {n:'Branca',  h:'#F5F5F5'},
+  {n:'Marrom',  h:'#5D4037'},
+  {n:'Mostarda',h:'#E8A020'},
+  {n:'Preta',   h:'#3a3a3a'},
+  {n:'Vermelha',h:'#D32F2F'},
+  {n:'Verde',   h:'#388E3C'},
+];
+const ACCENTS = ['#7c4daa','#c45c00','#8e24aa','#e65100','#1a3a6b','#880E4F','#2e7d32','#283593','#5D4037','#c45c00'];
+const BGS     = ['#ede8f5','#fff4e8','#f5e8f5','#fff3e0','#e8f0fe','#fce4ec','#e8f5e9','#e3f2fd','#efebe9','#fef3e2'];
+
+let dados = {logo:'', estampas:[]};
+let idxEditando = null;
+let tmp = {};
+
+// INÍCIO
+window.onload = () => {
+  const s = localStorage.getItem('sou_catalogo');
+  if(s) { try { dados = JSON.parse(s); } catch(e){} }
+  atualizarLogo();
+  renderTudo();
+};
+
+// LOGO
+function trocarLogo(inp) {
+  const f = inp.files[0]; if(!f) return;
+  ler(f, src => { dados.logo = src; atualizarLogo(); salvarLocal(); toast('Logo atualizada!','ok'); });
+}
+function atualizarLogo() {
+  const img = document.getElementById('logo-img');
+  const span = document.querySelector('#logo-circle span');
+  const flogo = document.getElementById('f-logo');
+  if(dados.logo) {
+    img.src = dados.logo; img.style.display = 'block';
+    if(span) span.style.display = 'none';
+    if(flogo) { flogo.src = dados.logo; flogo.style.display = 'block'; }
+  }
+}
+
+// RENDER PRINCIPAL
+function renderTudo() {
+  const lista = document.getElementById('lista');
+  const vazio = document.getElementById('vazio');
+  const filtros = document.getElementById('filtros');
+
+  // Filtros
+  filtros.innerHTML = '<button class="fbtn-todas ativo" onclick="filtrar(\'todas\',this)">Todas</button>';
+  dados.estampas.forEach((e,i) => {
+    const b = document.createElement('button');
+    b.className = 'fbtn';
+    b.textContent = e.nome;
+    b.onclick = function(){ filtrar('e'+i, this); };
+    filtros.appendChild(b);
+  });
+
+  // Remover estampas antigas
+  lista.querySelectorAll('.estampa').forEach(el => el.remove());
+
+  if(!dados.estampas.length) {
+    vazio.style.display = 'block';
+    document.getElementById('contador').innerHTML = '';
+    return;
+  }
+  vazio.style.display = 'none';
+
+  dados.estampas.forEach((e, i) => {
+    const ac = ACCENTS[i % ACCENTS.length];
+    const bg = BGS[i % BGS.length];
+    const num = String(i+1).padStart(2,'0');
+    const pid = 'e'+num+'_p', oid = 'e'+num+'_o';
+    const coresComFoto = CORES.filter(c => e.cores && e.cores[c.n]);
+
+    const swHtml = (cid, msrc) =>
+      coresComFoto.map(c =>
+        `<button class="swatch" data-cor="${c.n}" data-img="${e.cores[c.n]}" data-cid="${cid}" style="background:${c.h}" title="${c.n}"></button>`
+      ).join('') +
+      `<button class="btn-voltar" id="bv_${cid}" data-mockup="${msrc}" data-cid="${cid}">← Ver Mockup</button>`;
+
+    const galHtml = coresComFoto.map(c =>
+      `<div class="cor-card">
+        <img src="${e.cores[c.n]}" alt="${c.n}" loading="lazy">
+        <div class="cor-nome"><span class="cor-bolinha" style="background:${c.h};border:1px solid rgba(0,0,0,.1)"></span>${c.n}</div>
+      </div>`
+    ).join('');
+
+    const sec = document.createElement('section');
+    sec.className = 'estampa';
+    sec.id = 'e'+i;
+    sec.dataset.search = e.nome.toLowerCase() + ' estampa ' + num;
+    sec.innerHTML = `
+      <div class="est-cabeca" style="background:${bg};border-left:6px solid ${ac}">
+        <div class="est-cabeca-left">
+          <div class="est-num" style="color:${ac}">Estampa ${num}</div>
+          <div class="est-titulo">"${e.nome}"</div>
+        </div>
+        <button class="est-editar" onclick="abrirModalEditar(${i})">✏️ Editar</button>
+      </div>
+      <div class="est-corpo">
+        <div class="mockups">
+          ${e.padrao ? `
+          <div class="mockup">
+            <div class="mockup-tag" style="background:${ac}">Camiseta Padrão</div>
+            <div class="mockup-foto"><img id="${pid}_img" src="${e.padrao}" alt="Padrão" loading="lazy"></div>
+            <div class="mockup-info">
+              <div class="cor-atual">Cor: <strong id="${pid}_nome">—</strong></div>
+              <div class="swatches" id="${pid}_sw">${swHtml(pid, e.padrao)}</div>
+            </div>
+          </div>` : ''}
+          ${e.over ? `
+          <div class="mockup">
+            <div class="mockup-tag" style="background:#222">Camiseta Oversize</div>
+            <div class="mockup-foto"><img id="${oid}_img" src="${e.over}" alt="Oversize" loading="lazy"></div>
+            <div class="mockup-info">
+              <div class="cor-atual">Cor: <strong id="${oid}_nome">—</strong></div>
+              <div class="swatches" id="${oid}_sw">${swHtml(oid, e.over)}</div>
+            </div>
+          </div>` : ''}
+        </div>
+        ${galHtml ? `<div class="galeria-titulo">Cores disponíveis</div><div class="galeria">${galHtml}</div>` : ''}
+      </div>`;
+    lista.appendChild(sec);
+  });
+
+  // Eventos swatches
+  document.querySelectorAll('.swatch').forEach(b => {
+    b.addEventListener('click', () => {
+      const cid = b.dataset.cid;
+      const img = document.getElementById(cid+'_img');
+      const nome = document.getElementById(cid+'_nome');
+      const bv = document.getElementById('bv_'+cid);
+      if(!img) return;
+      img.src = b.dataset.img;
+      nome.textContent = b.dataset.cor;
+      document.querySelectorAll('#'+cid+'_sw .swatch').forEach(s => s.classList.remove('sel'));
+      b.classList.add('sel');
+      if(bv) bv.classList.add('visivel');
+    });
+  });
+  document.querySelectorAll('.btn-voltar').forEach(b => {
+    b.addEventListener('click', () => {
+      const cid = b.dataset.cid;
+      const img = document.getElementById(cid+'_img');
+      const nome = document.getElementById(cid+'_nome');
+      if(!img) return;
+      img.src = b.dataset.mockup;
+      nome.textContent = '—';
+      document.querySelectorAll('#'+cid+'_sw .swatch').forEach(s => s.classList.remove('sel'));
+      b.classList.remove('visivel');
+    });
+  });
+
+  atualizarContador();
+}
+
+// FILTRO
+let filtroAtual = 'todas';
+function filtrar(id, btn) {
+  filtroAtual = id;
+  document.querySelectorAll('.fbtn,.fbtn-todas').forEach(b => b.classList.remove('ativo'));
+  if(btn) btn.classList.add('ativo');
+  atualizarVista();
+}
+function atualizarVista() {
+  const termo = document.getElementById('busca').value.toLowerCase().trim();
+  let vis = 0;
+  document.querySelectorAll('.estampa').forEach(s => {
+    const mf = filtroAtual === 'todas' || s.id === filtroAtual;
+    const ms = !termo || s.dataset.search.includes(termo);
+    s.classList.toggle('escondida', !(mf && ms));
+    if(mf && ms) vis++;
+  });
+  document.getElementById('contador').innerHTML = `Exibindo <span>${vis}</span> estampa${vis!==1?'s':''}`;
+}
+function atualizarContador() { atualizarVista(); }
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('busca').addEventListener('input', atualizarVista);
+});
+
+// MODAL
+function abrirModalNovo() {
+  idxEditando = null;
+  tmp = {nome:'', padrao:'', over:'', cores:{}};
+  document.getElementById('modal-titulo').textContent = 'Nova Estampa';
+  document.getElementById('campo-nome').value = '';
+  document.getElementById('btn-excluir').style.display = 'none';
+  renderPrevPadrao(null); renderPrevOver(null);
+  renderCoresUpload();
+  document.getElementById('modal').classList.add('aberto');
+}
+function abrirModalEditar(i) {
+  idxEditando = i;
+  tmp = JSON.parse(JSON.stringify(dados.estampas[i]));
+  document.getElementById('modal-titulo').textContent = `Editar — ${tmp.nome}`;
+  document.getElementById('campo-nome').value = tmp.nome || '';
+  document.getElementById('btn-excluir').style.display = 'block';
+  renderPrevPadrao(tmp.padrao); renderPrevOver(tmp.over);
+  renderCoresUpload();
+  document.getElementById('modal').classList.add('aberto');
+}
+function fecharModal() { document.getElementById('modal').classList.remove('aberto'); }
+
+function renderPrevPadrao(src) {
+  document.getElementById('prev-padrao').innerHTML = src
+    ? `<img src="${src}" style="max-height:80px;object-fit:contain;border-radius:6px;margin-bottom:6px"><div class="upload-box-label">Padrão ✓</div>`
+    : `<div class="upload-box-icon">👕</div><div class="upload-box-label">Padrão — Toque para adicionar</div>`;
+}
+function renderPrevOver(src) {
+  document.getElementById('prev-over').innerHTML = src
+    ? `<img src="${src}" style="max-height:80px;object-fit:contain;border-radius:6px;margin-bottom:6px"><div class="upload-box-label">Oversize ✓</div>`
+    : `<div class="upload-box-icon">👕</div><div class="upload-box-label">Oversize — Toque para adicionar</div>`;
+}
+function upMockup(inp, tipo) {
+  const f = inp.files[0]; if(!f) return;
+  ler(f, src => {
+    if(tipo==='padrao') { tmp.padrao = src; renderPrevPadrao(src); }
+    else { tmp.over = src; renderPrevOver(src); }
+  });
+}
+function renderCoresUpload() {
+  const g = document.getElementById('cores-upload'); g.innerHTML = '';
+  CORES.forEach(c => {
+    const tem = tmp.cores && tmp.cores[c.n];
+    const d = document.createElement('div');
+    d.className = 'cor-upload';
+    d.style.borderColor = tem ? '#2e7d32' : '';
+    d.innerHTML = `
+      <input type="file" accept="image/*" onchange="upCor(this,'${c.n}')">
+      ${tem ? `<img src="${tem}" alt="${c.n}">` : `<div class="cor-upload-ph">+</div>`}
+      <div class="cor-upload-label">
+        <span class="cor-swatch-mini" style="background:${c.h}"></span>
+        ${c.n}${tem?' ✓':''}
+      </div>`;
+    g.appendChild(d);
+  });
+}
+function upCor(inp, nome) {
+  const f = inp.files[0]; if(!f) return;
+  ler(f, src => { if(!tmp.cores) tmp.cores={}; tmp.cores[nome] = src; renderCoresUpload(); });
+}
+
+function salvarEstampa() {
+  const nome = document.getElementById('campo-nome').value.trim();
+  if(!nome) { toast('Digite o nome da estampa!','err'); return; }
+  if(!tmp.padrao && !tmp.over) { toast('Adicione pelo menos um mockup!','err'); return; }
+  tmp.nome = nome;
+  if(idxEditando === null) dados.estampas.push(JSON.parse(JSON.stringify(tmp)));
+  else dados.estampas[idxEditando] = JSON.parse(JSON.stringify(tmp));
+  salvarLocal();
+  renderTudo();
+  fecharModal();
+  toast('Estampa salva com sucesso!','ok');
+}
+function excluirEstampa() {
+  if(!confirm(`Excluir "${dados.estampas[idxEditando].nome}"?`)) return;
+  dados.estampas.splice(idxEditando, 1);
+  salvarLocal(); renderTudo(); fecharModal();
+  toast('Estampa excluída.','');
+}
+
+// SAVE/LOAD
+function salvarLocal() {
+  try { localStorage.setItem('sou_catalogo', JSON.stringify(dados)); }
+  catch(e) { toast('Dados grandes! Use o botão 💾 Salvar para exportar.','err'); }
+}
+function salvar() {
+  const blob = new Blob([JSON.stringify(dados)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'sou_catalogo.json';
+  a.click();
+  toast('Arquivo salvo! Guarde ele para não perder os dados.','ok');
+}
+function carregar(inp) {
+  const f = inp.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = e => {
+    try {
+      dados = JSON.parse(e.target.result);
+      salvarLocal(); atualizarLogo(); renderTudo();
+      toast(`${dados.estampas.length} estampas carregadas!`,'ok');
+    } catch { toast('Arquivo inválido!','err'); }
+  };
+  r.readAsText(f);
+}
+
+// UTILS
+function ler(file, cb) {
+  const r = new FileReader();
+  r.onload = e => cb(e.target.result);
+  r.readAsDataURL(file);
+}
+function toast(msg, tipo='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast show ${tipo}`;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Fechar modal clicando fora
+document.getElementById('modal').addEventListener('click', function(e) {
+  if(e.target === this) fecharModal();
+});
+</script>
+</body>
+</html>
